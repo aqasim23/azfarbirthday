@@ -342,24 +342,25 @@
   }
 
   async function saveFunFact(funFactData) {
-    const headers = { 'Content-Type': 'application/json' };
-    if (APP_SECRET) headers['X-App-Secret'] = APP_SECRET;
+  const headers = { 'Content-Type': 'application/json' };
 
-    const res = await fetch(FUN_FACTS_ENDPOINT, {
+  try {
+    await fetch(FUN_FACTS_ENDPOINT, {
       method: 'POST',
+      mode: 'no-cors',          // <-- IMPORTANT
       headers,
       body: JSON.stringify(funFactData)
     });
 
-    // Apps Script returns JSON; parse it:
-    try {
-      const json = await res.json();
-      return json;
-    } catch {
-      // If something odd with parsing, assume not OK:
-      return { isOk: false, error: 'Invalid response' };
-    }
+    // In no-cors mode we can’t read the response,
+    // so just assume it succeeded:
+    return { isOk: true };
+  } catch (e) {
+    console.warn('saveFunFact error:', e);
+    return { isOk: false, error: String(e) };
   }
+}
+
 
   // On load, optionally cache existing facts (for your 999 cap)
   document.addEventListener('DOMContentLoaded', fetchFacts);
