@@ -326,7 +326,7 @@
 
   
   <script>
-  const FUN_FACTS_ENDPOINT = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE'; // e.g. https://script.google.com/macros/s/.../exec
+  const FUN_FACTS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzlZAPEIUZ6orjS3ogZUiQYWpTef8CB-a6P5sd0u29we5Hsf26l29-k2lxRGHNddBWv/exec'; // e.g. https://script.google.com/macros/s/.../exec
   const APP_SECRET = ''; // optional: must match Apps Script APP_SECRET if you set one
 
   let currentFunFacts = [];
@@ -582,24 +582,24 @@
       window.open('https://bit.ly/492OvlB', '_blank', 'noopener,noreferrer');
     });
 
-    // Data SDK setup
-    let currentFunFacts = [];
+    // // Data SDK setup
+    // let currentFunFacts = [];
     
-    const dataHandler = {
-      onDataChanged(data) {
-        currentFunFacts = data;
-      }
-    };
+    // const dataHandler = {
+    //   onDataChanged(data) {
+    //     currentFunFacts = data;
+    //   }
+    // };
 
-    // Initialize Data SDK
-    async function initializeDataSDK() {
-      if (window.dataSdk) {
-        const initResult = await window.dataSdk.init(dataHandler);
-        if (!initResult.isOk) {
-          console.error("Failed to initialize data SDK");
-        }
-      }
-    }
+    // // Initialize Data SDK
+    // async function initializeDataSDK() {
+    //   if (window.dataSdk) {
+    //     const initResult = await window.dataSdk.init(dataHandler);
+    //     if (!initResult.isOk) {
+    //       console.error("Failed to initialize data SDK");
+    //     }
+    //   }
+    // }
 
     // Fun fact submission
     document.getElementById('submitFactBtn').addEventListener('click', async function() {
@@ -765,10 +765,10 @@ if (result.isOk) {
 
 
 
-    // Initialize everything when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeDataSDK();
-    });
+    // // Initialize everything when page loads
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   initializeDataSDK();
+    // });
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9996036331a35de2',t:'MTc2MjI3OTI1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
