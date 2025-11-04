@@ -28,25 +28,7 @@
       position: relative;
     }
 
-   #balloonLayer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;  /* clicks pass through */
-  z-index: 9998;         /* above cards, below confetti (9999) */
-}
-
-.balloon {
-  position: absolute;    /* now positioned inside the overlay */
-  will-change: transform, opacity;
-}
-
-/* Optional: let them float a bit longer & higher */
-@keyframes floatUp {
-  0%   { transform: translateY(100px) rotate(0deg); opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
-}
+ 
 
     .azfar-photo {
      width: 100%;
@@ -90,20 +72,29 @@
       overflow: hidden;
     }
 
-    .balloon {
-      position: fixed;
-      font-size: 48px;
-      animation: floatUp 6s infinite ease-in-out;
-      opacity: 0;
-      z-index: 1000;
-    }
+    #balloonLayer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;  /* clicks pass through */
+  z-index: 2147483646;   /* very high; below confetti (if any) */
+}
 
-    @keyframes floatUp {
-      0% { transform: translateY(100px) rotate(0deg); opacity: 0; }
-      5% { opacity: 1; }
-      95% { opacity: 1; }
-      100% { transform: translateY(-800px) rotate(20deg); opacity: 0; }
-    }
+.balloon {
+  position: absolute;    /* inside the overlay */
+  font-size: 48px;
+  animation: floatUp 10s ease-in-out forwards;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Longer, higher float so they survive the reveal/scroll */
+@keyframes floatUp {
+  0%   { transform: translateY(100px) rotate(0deg);  opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
+}
+
 
     .cake-container {
       font-size: 80px;
@@ -729,17 +720,7 @@
   `;
   document.head.appendChild(style);
 
-  // Start reveal after hero button
-  function createBalloon() {
-    const balloon = document.createElement('div');
-    balloon.className = 'balloon';
-    balloon.textContent = ['🎈', '🎈', '🎈'][Math.floor(Math.random() * 3)];
-    balloon.style.left = Math.random() * 80 + 10 + '%';
-    balloon.style.animationDelay = Math.random() * 2 + 's';
-    balloon.style.animationDuration = '10s';
-    document.body.appendChild(balloon);
-    setTimeout(() => balloon.remove(), 12000);
-  }
+  
 
   document.getElementById('startBtn').addEventListener('click', function() {
     for (let i = 0; i < 10; i++) setTimeout(createBalloon, i * 300);
