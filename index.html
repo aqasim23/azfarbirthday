@@ -576,199 +576,157 @@
     });
 
 
+  // Directions button
+  document.getElementById('directionsBtn').addEventListener('click', function() {
+    window.open('https://maps.app.goo.gl/NVu95obtc7j5vy3V9', '_blank', 'noopener,noreferrer');
+  });
 
-    // Directions button
-    document.getElementById('directionsBtn').addEventListener('click', function() {
-      window.open('https://bit.ly/492OvlB', '_blank', 'noopener,noreferrer');
-    });
+  // Fun fact submission
+  document.getElementById('submitFactBtn').addEventListener('click', async function() {
+    const nameInput = document.getElementById('guestNameInput');
+    const factInput = document.getElementById('funFactInput');
+    const submitBtn = this;
 
-    // // Data SDK setup
-    // let currentFunFacts = [];
-    
-    // const dataHandler = {
-    //   onDataChanged(data) {
-    //     currentFunFacts = data;
-    //   }
-    // };
+    if (nameInput.value.trim() && factInput.value.trim()) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
 
-    // // Initialize Data SDK
-    // async function initializeDataSDK() {
-    //   if (window.dataSdk) {
-    //     const initResult = await window.dataSdk.init(dataHandler);
-    //     if (!initResult.isOk) {
-    //       console.error("Failed to initialize data SDK");
-    //     }
-    //   }
-    // }
-
-    // Fun fact submission
-    document.getElementById('submitFactBtn').addEventListener('click', async function() {
-      const nameInput = document.getElementById('guestNameInput');
-      const factInput = document.getElementById('funFactInput');
-      const submitBtn = this;
-      
-      if (nameInput.value.trim() && factInput.value.trim()) {
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Saving...';
-        
-        // Check if we're at the limit
-        if (currentFunFacts.length >= 999) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit Fun Fact';
-          
-          // Show inline error message
-          const errorMsg = document.createElement('div');
-          errorMsg.style.cssText = 'background: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
-          errorMsg.textContent = 'Maximum limit of 999 fun facts reached. Thank you for all the wonderful submissions!';
-          document.getElementById('funFactCard').appendChild(errorMsg);
-          
-          setTimeout(() => errorMsg.remove(), 5000);
-          return;
-        }
-        
-        const funFactData = {
-          guest_name: nameInput.value.trim(),
-          fun_fact: factInput.value.trim(),
-          submitted_at: new Date().toISOString()
-        };
-        
-        // if (window.dataSdk) {
-        //   const result = await window.dataSdk.create(funFactData);
-          
-        //   if (result.isOk) {
-        //     createConfetti();
-        //     document.getElementById('funFactResponse').style.display = 'block';
-        //     nameInput.value = '';
-        //     factInput.value = '';
-            
-        //     setTimeout(() => {
-        //       document.getElementById('gameCard').scrollIntoView({ behavior: 'smooth' });
-        //     }, 2000);
-        //   } else {
-        //     // Show error message
-        //     const errorMsg = document.createElement('div');
-        //     errorMsg.style.cssText = 'background: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
-        //     errorMsg.textContent = 'Sorry, there was an error saving your fun fact. Please try again!';
-        //     document.getElementById('funFactCard').appendChild(errorMsg);
-            
-        //     setTimeout(() => errorMsg.remove(), 5000);
-        //   }
-        // }
-
-       const result = await saveFunFact(funFactData);
-
-if (result.isOk) {
-  createConfetti();
-  document.getElementById('funFactResponse').style.display = 'block';
-  nameInput.value = '';
-  factInput.value = '';
-
-  // Update local cache so your 999-cap stays meaningful
-  currentFunFacts.push(funFactData);
-
-  setTimeout(() => {
-    document.getElementById('gameCard').scrollIntoView({ behavior: 'smooth' });
-  }, 2000);
-} else {
-  const errorMsg = document.createElement('div');
-  errorMsg.style.cssText = 'background: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
-  errorMsg.textContent = 'Sorry, there was an error saving your fun fact. Please try again!';
-  document.getElementById('funFactCard').appendChild(errorMsg);
-  setTimeout(() => errorMsg.remove(), 5000);
-}
-
-        
-        // Reset button
+      if (currentFunFacts.length >= 999) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit Fun Fact';
+        const errorMsg = document.createElement('div');
+        errorMsg.style.cssText = 'background: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
+        errorMsg.textContent = 'Maximum limit of 999 fun facts reached. Thank you for all the wonderful submissions!';
+        document.getElementById('funFactCard').appendChild(errorMsg);
+        setTimeout(() => errorMsg.remove(), 5000);
+        return;
+      }
+
+      const funFactData = {
+        guest_name: nameInput.value.trim(),
+        fun_fact: factInput.value.trim(),
+        submitted_at: new Date().toISOString()
+      };
+
+      const result = await saveFunFact(funFactData);
+
+      if (result.isOk) {
+        createConfetti();
+        document.getElementById('funFactResponse').style.display = 'block';
+        nameInput.value = '';
+        factInput.value = '';
+        currentFunFacts.push(funFactData);
+        setTimeout(() => {
+          document.getElementById('gameCard').scrollIntoView({ behavior: 'smooth' });
+        }, 2000);
       } else {
-        // Show validation message
-        const validationMsg = document.createElement('div');
-        validationMsg.style.cssText = 'background: #fff3e0; color: #ef6c00; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
-        validationMsg.textContent = 'Please enter both your name and a fun fact!';
-        document.getElementById('funFactCard').appendChild(validationMsg);
-        
-        setTimeout(() => validationMsg.remove(), 3000);
+        const errorMsg = document.createElement('div');
+        errorMsg.style.cssText = 'background: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
+        errorMsg.textContent = 'Sorry, there was an error saving your fun fact. Please try again!';
+        document.getElementById('funFactCard').appendChild(errorMsg);
+        setTimeout(() => errorMsg.remove(), 5000);
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Fun Fact';
+    } else {
+      const validationMsg = document.createElement('div');
+      validationMsg.style.cssText = 'background: #fff3e0; color: #ef6c00; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
+      validationMsg.textContent = 'Please enter both your name and a fun fact!';
+      document.getElementById('funFactCard').appendChild(validationMsg);
+      setTimeout(() => validationMsg.remove(), 3000);
+    }
+  });
+
+  // Balloon game
+  let balloonsPopped = 0;
+  const totalBalloons = 10;
+
+  function createGameBalloon() {
+    const container = document.getElementById('gameContainer');
+    const balloon = document.createElement('div');
+    balloon.className = 'game-balloon';
+    balloon.textContent = ['🎈', '🎈', '🎈'][Math.floor(Math.random() * 3)];
+    balloon.style.left = Math.random() * 80 + '%';
+    balloon.style.top = Math.random() * 70 + '%';
+    balloon.style.animationDelay = Math.random() * 2 + 's';
+
+    balloon.addEventListener('click', function() {
+      this.textContent = '💥';
+      balloonsPopped++;
+      document.getElementById('gameScore').textContent = `Balloons Popped: ${balloonsPopped}/${totalBalloons}`;
+      setTimeout(() => this.remove(), 300);
+      if (balloonsPopped === totalBalloons) {
+        createConfetti();
+        setTimeout(() => {
+          document.getElementById('thankYouCard').scrollIntoView({ behavior: 'smooth' });
+        }, 2000);
       }
     });
 
-    // Balloon popping game
-    let balloonsPopped = 0;
-    const totalBalloons = 10;
+    container.appendChild(balloon);
+  }
 
-    function createGameBalloon() {
-      const container = document.getElementById('gameContainer');
-      const balloon = document.createElement('div');
-      balloon.className = 'game-balloon';
-      balloon.textContent = ['🎈', '🎈', '🎈'][Math.floor(Math.random() * 3)];
-      balloon.style.left = Math.random() * 80 + '%';
-      balloon.style.top = Math.random() * 70 + '%';
-      balloon.style.animationDelay = Math.random() * 2 + 's';
-      
-      balloon.addEventListener('click', function() {
-        this.textContent = '💥';
-        balloonsPopped++;
-        document.getElementById('gameScore').textContent = `Balloons Popped: ${balloonsPopped}/${totalBalloons}`;
-        
-        setTimeout(() => this.remove(), 300);
-        
-        if (balloonsPopped === totalBalloons) {
-          createConfetti();
-          setTimeout(() => {
-            document.getElementById('thankYouCard').scrollIntoView({ behavior: 'smooth' });
-          }, 2000);
-        }
-      });
-      
-      container.appendChild(balloon);
+  for (let i = 0; i < totalBalloons; i++) {
+    createGameBalloon();
+  }
+
+  // Final button
+  document.getElementById('finalBtn').addEventListener('click', function() {
+    createConfetti();
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 2000);
+  });
+
+  // Confetti
+  function createConfetti() {
+    const colors = ['#FF69B4', '#FFD700', '#87CEEB', '#98FB98', '#DDA0DD'];
+    for (let i = 0; i < 100; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.top = '-10px';
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear`;
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 5000);
     }
+  }
 
-    for (let i = 0; i < totalBalloons; i++) {
-      createGameBalloon();
-    }
-
-    // Final button
-    document.getElementById('finalBtn').addEventListener('click', function() {
-      createConfetti();
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 2000);
-    });
-
-    // Confetti function
-    function createConfetti() {
-      const colors = ['#FF69B4', '#FFD700', '#87CEEB', '#98FB98', '#DDA0DD'];
-      for (let i = 0; i < 100; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + '%';
-        confetti.style.top = '-10px';
-        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear`;
-        document.body.appendChild(confetti);
-        
-        setTimeout(() => confetti.remove(), 5000);
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes confettiFall {
+      to {
+        transform: translateY(100vh) rotate(${Math.random() * 360}deg);
+        opacity: 0;
       }
     }
+  `;
+  document.head.appendChild(style);
 
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes confettiFall {
-        to {
-          transform: translateY(100vh) rotate(${Math.random() * 360}deg);
-          opacity: 0;
-        }
-      }
-    `;
-    document.head.appendChild(style);
+  // Start reveal after hero button
+  function createBalloon() {
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon';
+    balloon.textContent = ['🎈', '🎈', '🎈'][Math.floor(Math.random() * 3)];
+    balloon.style.left = Math.random() * 80 + 10 + '%';
+    balloon.style.animationDelay = Math.random() * 2 + 's';
+    balloon.style.animationDuration = '10s';
+    document.body.appendChild(balloon);
+    setTimeout(() => balloon.remove(), 12000);
+  }
 
-
-
-    // // Initialize everything when page loads
-    // document.addEventListener('DOMContentLoaded', function() {
-    //   initializeDataSDK();
-    // });
+  document.getElementById('startBtn').addEventListener('click', function() {
+    for (let i = 0; i < 10; i++) setTimeout(createBalloon, i * 300);
+    setTimeout(() => {
+      document.getElementById('detailsCard').classList.remove('hidden');
+      document.getElementById('funFactCard').classList.remove('hidden');
+      document.getElementById('gameCard').classList.remove('hidden');
+      document.getElementById('thankYouCard').classList.remove('hidden');
+      document.getElementById('detailsCard').scrollIntoView({ behavior: 'smooth' });
+    }, 2000);
+  });
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9996036331a35de2',t:'MTc2MjI3OTI1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
