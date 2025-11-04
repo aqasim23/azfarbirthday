@@ -588,19 +588,16 @@
 
     // Start button
     document.getElementById('startBtn').addEventListener('click', function() {
-      for (let i = 0; i < 10; i++) {
-        setTimeout(createBalloon, i * 300);
-      }
-      
-      setTimeout(() => {
-        document.getElementById('detailsCard').classList.remove('hidden');
-        document.getElementById('funFactCard').classList.remove('hidden');
-        document.getElementById('gameCard').classList.remove('hidden');
-        document.getElementById('thankYouCard').classList.remove('hidden');
-        
-        document.getElementById('detailsCard').scrollIntoView({ behavior: 'smooth' });
-      }, 2000);
-    });
+  for (let i = 0; i < 10; i++) setTimeout(createBalloon, i * 300);
+  setTimeout(() => {
+    document.getElementById('detailsCard').classList.remove('hidden');
+    document.getElementById('funFactCard').classList.remove('hidden');
+    document.getElementById('gameCard').classList.remove('hidden');
+    document.getElementById('thankYouCard').classList.remove('hidden');
+    document.getElementById('detailsCard').scrollIntoView({ behavior: 'smooth' });
+  }, 2000);
+});
+
 
 
   // Directions button
