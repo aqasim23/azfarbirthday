@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Azfar's 10th Birthday Party</title>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  
   <style>
     body {
       box-sizing: border-box;
@@ -324,6 +323,48 @@
   </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+
+  
+  <script>
+  const FUN_FACTS_ENDPOINT = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE'; // e.g. https://script.google.com/macros/s/.../exec
+  const APP_SECRET = ''; // optional: must match Apps Script APP_SECRET if you set one
+
+  let currentFunFacts = [];
+
+  async function fetchFacts() {
+    try {
+      const res = await fetch(FUN_FACTS_ENDPOINT, { method: 'GET' });
+      const json = await res.json();
+      if (json.isOk && Array.isArray(json.rows)) currentFunFacts = json.rows;
+    } catch (e) {
+      console.warn('Fetch facts failed', e);
+    }
+  }
+
+  async function saveFunFact(funFactData) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (APP_SECRET) headers['X-App-Secret'] = APP_SECRET;
+
+    const res = await fetch(FUN_FACTS_ENDPOINT, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(funFactData)
+    });
+
+    // Apps Script returns JSON; parse it:
+    try {
+      const json = await res.json();
+      return json;
+    } catch {
+      // If something odd with parsing, assume not OK:
+      return { isOk: false, error: 'Invalid response' };
+    }
+  }
+
+  // On load, optionally cache existing facts (for your 999 cap)
+  document.addEventListener('DOMContentLoaded', fetchFacts);
+</script>
+
  </head>
  <body>
   <div class="container">
@@ -592,28 +633,51 @@
           submitted_at: new Date().toISOString()
         };
         
-        if (window.dataSdk) {
-          const result = await window.dataSdk.create(funFactData);
+        // if (window.dataSdk) {
+        //   const result = await window.dataSdk.create(funFactData);
           
-          if (result.isOk) {
-            createConfetti();
-            document.getElementById('funFactResponse').style.display = 'block';
-            nameInput.value = '';
-            factInput.value = '';
+        //   if (result.isOk) {
+        //     createConfetti();
+        //     document.getElementById('funFactResponse').style.display = 'block';
+        //     nameInput.value = '';
+        //     factInput.value = '';
             
-            setTimeout(() => {
-              document.getElementById('gameCard').scrollIntoView({ behavior: 'smooth' });
-            }, 2000);
-          } else {
-            // Show error message
-            const errorMsg = document.createElement('div');
-            errorMsg.style.cssText = 'background: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
-            errorMsg.textContent = 'Sorry, there was an error saving your fun fact. Please try again!';
-            document.getElementById('funFactCard').appendChild(errorMsg);
+        //     setTimeout(() => {
+        //       document.getElementById('gameCard').scrollIntoView({ behavior: 'smooth' });
+        //     }, 2000);
+        //   } else {
+        //     // Show error message
+        //     const errorMsg = document.createElement('div');
+        //     errorMsg.style.cssText = 'background: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
+        //     errorMsg.textContent = 'Sorry, there was an error saving your fun fact. Please try again!';
+        //     document.getElementById('funFactCard').appendChild(errorMsg);
             
-            setTimeout(() => errorMsg.remove(), 5000);
-          }
-        }
+        //     setTimeout(() => errorMsg.remove(), 5000);
+        //   }
+        // }
+
+       const result = await saveFunFact(funFactData);
+
+if (result.isOk) {
+  createConfetti();
+  document.getElementById('funFactResponse').style.display = 'block';
+  nameInput.value = '';
+  factInput.value = '';
+
+  // Update local cache so your 999-cap stays meaningful
+  currentFunFacts.push(funFactData);
+
+  setTimeout(() => {
+    document.getElementById('gameCard').scrollIntoView({ behavior: 'smooth' });
+  }, 2000);
+} else {
+  const errorMsg = document.createElement('div');
+  errorMsg.style.cssText = 'background: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center;';
+  errorMsg.textContent = 'Sorry, there was an error saving your fun fact. Please try again!';
+  document.getElementById('funFactCard').appendChild(errorMsg);
+  setTimeout(() => errorMsg.remove(), 5000);
+}
+
         
         // Reset button
         submitBtn.disabled = false;
